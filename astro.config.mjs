@@ -3,44 +3,36 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import compressor from "astro-compressor";
 import starlight from "@astrojs/starlight";
-
 import mdx from "@astrojs/mdx";
+import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
+  // Atur output ke 'server' untuk mengaktifkan SSR
+  output: 'server',
+  // Tambahkan Cloudflare adapter
+  adapter: cloudflare(),
+  
   // https://docs.astro.build/en/guides/images/#authorizing-remote-images
   site: "https://screwfast.uk",
   image: {
     domains: ["images.unsplash.com"],
   },
-  // i18n: {
-  //   defaultLocale: "en",
-  //   locales: ["en", "fr"],
-  //   fallback: {
-  //     fr: "en",
-  //   },
-  //   routing: {
-  //     prefixDefaultLocale: false,
-  //   },
-  // },
+  
   prefetch: true,
+  
   integrations: [
     sitemap({
       i18n: {
-        defaultLocale: "en", // All urls that don't contain language prefix will be treated as default locale
+        defaultLocale: "en",
         locales: {
-          en: "en", // The `defaultLocale` value must present in `locales` keys
+          en: "en",
           fr: "fr",
         },
       },
     }),
     starlight({
       title: "ScrewFast Docs",
-      // https://github.com/withastro/starlight/blob/main/packages/starlight/CHANGELOG.md
-      // If no Astro and Starlight i18n configurations are provided, the built-in default locale is used in Starlight and a matching Astro i18n configuration is generated/used.
-      // If only a Starlight i18n configuration is provided, an equivalent Astro i18n configuration is generated/used.
-      // If only an Astro i18n configuration is provided, the Starlight i18n configuration is updated to match it.
-      // If both an Astro and Starlight i18n configurations are provided, an error is thrown.
       locales: {
         root: {
           label: "English",
@@ -53,7 +45,6 @@ export default defineConfig({
         ja: { label: "日本語", lang: "ja" },
         "zh-cn": { label: "简体中文", lang: "zh-CN" },
       },
-      // https://starlight.astro.build/guides/sidebar/
       sidebar: [
         {
           label: "Quick Start Guides",
@@ -96,8 +87,7 @@ export default defineConfig({
       components: {
         SiteTitle: "./src/components/ui/starlight/SiteTitle.astro",
         Head: "./src/components/ui/starlight/Head.astro",
-        MobileMenuFooter:
-          "./src/components/ui/starlight/MobileMenuFooter.astro",
+        MobileMenuFooter: "./src/components/ui/starlight/MobileMenuFooter.astro",
         ThemeSelect: "./src/components/ui/starlight/ThemeSelect.astro",
       },
       head: [
