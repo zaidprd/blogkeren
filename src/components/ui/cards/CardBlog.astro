@@ -1,70 +1,59 @@
 ---
-// Import necessary components and utilities
-import AvatarBlog from "@components/ui/avatars/AvatarBlog.astro";
-import { Image } from "astro:assets";
-import { formatDate } from "@utils/utils";
-import type { CollectionEntry } from "astro:content";
+// Import necessary modules and utilities
+import AvatarBlogLarge from "@components/ui/avatars/AvatarBlogLarge.astro";
 
-const { blogEntry, blogLocale = "" } = Astro.props;
-
+// Definisikan interface props yang baru, sesuai dengan format data Sanity
 interface Props {
-  blogEntry: CollectionEntry<"blog">;
-  blogLocale?: string;
+  blogEntry: {
+    data: {
+      title: string;
+      slug: string;
+      author: string;
+      cardImage: { url: string; altText: string };
+      pubDate: Date;
+      readTime: number;
+    };
+  };
 }
+
+const { blogEntry } = Astro.props;
 ---
 
-<!-- The following anchor tag is the main container for the card.
-     It's a link to the blog post detailed page.
-     The data-astro-prefetch is an Astro specific Dynamic HTML feature,
-     which automatically prefetches the linked page to speed up navigation. -->
-<a
-  class="group relative block rounded-xl outline-hidden ring-zinc-500 transition duration-500 focus-visible:ring-3 dark:ring-zinc-200 dark:focus:outline-hidden"
-  href={blogLocale && blogLocale !== "en"
-    ? `/${blogLocale}/blog/${blogEntry.id.replace(/^fr\//, "")}/`
-    : `/blog/${blogEntry.id.replace(/^en\//, "")}/`}
-  data-astro-prefetch
->
-  <!-- The container for the blog post's cover image. Uses astro:assets' Image for image source -->
-  <div
-    class="relative h-[350px] w-full shrink-0 overflow-hidden rounded-xl before:absolute before:inset-x-0 before:z-1 before:size-full before:bg-linear-to-t before:from-neutral-900/[.7]"
-  >
-    <Image
-      class="absolute start-0 top-0 size-full object-cover transition duration-500 group-hover:scale-110"
-      src={blogEntry.data.cardImage}
-      alt={blogEntry.data.cardImageAlt}
-      draggable={"false"}
-      loading={"eager"}
-      format={"avif"}
+<div class="group relative flex flex-col items-start gap-4 transition duration-300 hover:scale-[1.01] hover:shadow-lg focus:scale-[1.01] focus:shadow-lg motion-reduce:transition-none">
+  <div class="relative w-full overflow-hidden rounded-md pt-[50%]">
+    <img
+      class="absolute start-0 top-0 size-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-110"
+      src={blogEntry.data.cardImage.url}
+      alt={blogEntry.data.cardImage.altText}
+      draggable="false"
     />
   </div>
-  <!-- The container for the blog author's avatar and associated metadata (author name and publication date) -->
-  <div class="absolute inset-x-0 top-0 z-10">
-    <div class="flex h-full flex-col p-4 sm:p-6">
-      <div class="flex items-center">
-        <AvatarBlog blogEntry={blogEntry} />
-
-        <div class="ms-2.5 sm:ms-4">
-          <h4 class="font-bold text-neutral-50">
-            {blogEntry.data.author}
-          </h4>
-          <p class="text-xs text-neutral-50/[.8]">
-            {formatDate(blogEntry.data.pubDate)}
-          </p>
-        </div>
+  <div>
+    <h3 class="mb-2 text-balance text-xl font-semibold tracking-tight text-neutral-800 dark:text-neutral-200">
+      <a class="outline-hidden ring-zinc-500 transition duration-300 hover:text-orange-400 focus-visible:ring-3 dark:ring-zinc-200 dark:hover:text-neutral-50 dark:focus:outline-hidden" href={`/blog/${blogEntry.data.slug}/`}>
+        {blogEntry.data.title}
+      </a>
+    </h3>
+    <div class="flex items-center gap-x-3">
+      <AvatarBlogLarge
+        blogEntry={{
+          id: blogEntry.data.slug,
+          collection: "blog",
+          data: {
+            author: blogEntry.data.author,
+            cardImage: blogEntry.data.cardImage,
+            pubDate: blogEntry.data.pubDate,
+          },
+        }}
+      />
+      <div class="text-xs text-neutral-500 dark:text-neutral-400">
+        <span class="relative inline-block pe-3 before:absolute before:end-1 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:before:bg-neutral-600">
+          {blogEntry.data.author}
+        </span>
+        <span class="relative inline-block pe-3 before:absolute before:end-1 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:before:bg-neutral-600">
+          {blogEntry.data.readTime} min read
+        </span>
       </div>
     </div>
   </div>
-  <!-- The container for the blog post's title and description -->
-  <div class="absolute inset-x-0 bottom-0 z-10">
-    <div class="flex h-full flex-col p-4 sm:p-6">
-      <h3
-        class="text-balance text-lg font-bold text-neutral-50 group-hover:text-neutral-50/[.8] sm:text-3xl"
-      >
-        {blogEntry.data.title}
-      </h3>
-      <p class="mt-2 text-pretty text-neutral-50/[.8]">
-        {blogEntry.data.description}
-      </p>
-    </div>
-  </div>
-</a>
+</div>

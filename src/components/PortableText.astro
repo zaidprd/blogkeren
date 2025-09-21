@@ -1,0 +1,21 @@
+---
+// src/components/PortableText.astro
+import { toHTML } from "@portabletext/to-html";
+
+interface Props {
+  value: any; // Menerima data Portable Text dari Sanity
+}
+
+const { value } = Astro.props;
+
+const html = toHTML(value, {
+  components: {
+    // Anda bisa menambahkan komponen kustom di sini jika diperlukan
+    // Misalnya, untuk merender gambar, blok kode, atau elemen khusus lainnya
+  },
+});
+---
+
+<div class="prose dark:prose-invert">
+  <Fragment set:html={html} />
+</div>
