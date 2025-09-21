@@ -3,6 +3,9 @@
 import { client } from "../../lib/sanity.ts";
 import PortableText from '../../components/PortableText.astro';
 
+// Tambahkan baris ini di sini
+export const prerender = true;
+
 // Impor komponen dan utilitas
 import MainLayout from "@/layouts/MainLayout.astro";
 import AvatarBlogLarge from "@components/ui/avatars/AvatarBlogLarge.astro";
@@ -57,7 +60,10 @@ const post: Post | null = await client.fetch(`*[_type == "post" && slug.current 
   "pubDate": pubDate,
   "readTime": readTime,
   body,
-  "mainImage": mainImage.asset->{url, altText},
+  mainImage{
+    "url": asset->url,
+    altText
+  },
   "tags": tags[]->title,
   "seoTitle": seo.seoTitle,
   "metaDescription": seo.metaDescription,
@@ -121,13 +127,13 @@ const ogImage = post.socialImage?.url || post.mainImage?.url;
       <div class="mb-6 flex items-center justify-between">
         <div class="flex w-full gap-x-5 sm:items-center sm:gap-x-3">
           <AvatarBlogLarge
-    blogEntry={{
-      id: slug, // Tambahkan properti 'id'
-      collection: "blog", // Tambahkan properti 'collection'
-      data: {
-        author: post.author,
-        cardImage: post.mainImage,
-        pubDate: new Date(post.pubDate),
+            blogEntry={{
+              id: slug,
+              collection: "blog",
+              data: {
+                author: post.author,
+                cardImage: post.mainImage,
+                pubDate: new Date(post.pubDate),
               },
             }}
           />
@@ -135,18 +141,18 @@ const ogImage = post.socialImage?.url || post.mainImage?.url;
             <div class="flex items-center justify-between gap-x-2">
               <div>
                 <span class="font-bold text-neutral-700 dark:text-neutral-300">
-                  {post.author}
+                  {post.author || "Penulis tidak diketahui"}
                 </span>
                 <ul class="text-xs text-neutral-500">
                   <li
                     class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:text-neutral-400 dark:before:bg-neutral-600"
                   >
-                    {formatDate(new Date(post.pubDate))}
+                    {post.pubDate ? formatDate(new Date(post.pubDate)) : "Tanggal tidak tersedia"}
                   </li>
                   <li
                     class="relative inline-block pe-6 before:absolute before:end-2 before:top-1/2 before:size-1 before:-translate-y-1/2 before:rounded-full before:bg-neutral-300 last:pe-0 last-of-type:before:hidden dark:text-neutral-400 dark:before:bg-neutral-600"
                   >
-                    {post.readTime} min read
+                    {post.readTime ? `${post.readTime} min read` : "Waktu baca tidak tersedia"}
                   </li>
                 </ul>
               </div>
@@ -204,7 +210,11 @@ const ogImage = post.socialImage?.url || post.mainImage?.url;
     </div>
 
     <div class="grid grid-cols-2 gap-6">
-      {relatedPosts.map((entry) => <CardRelated blogEntry={{ data: { ...entry, pubDate: new Date(entry.pubDate) } }} />)}
+      {
+        relatedPosts.map((entry) => (
+          <CardRelated blogEntry={{ data: { ...entry, pubDate: new Date(entry.pubDate) } }} />
+        ))
+      }
     </div>
   </section>
 </MainLayout>

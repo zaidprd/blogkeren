@@ -3,15 +3,37 @@
 import { toHTML } from "@portabletext/to-html";
 
 interface Props {
-  value: any; // Menerima data Portable Text dari Sanity
+  value: any;
 }
 
 const { value } = Astro.props;
+// Tambahkan baris ini di sini
+console.log("Data Portable Text yang diterima:", value);
 
 const html = toHTML(value, {
   components: {
-    // Anda bisa menambahkan komponen kustom di sini jika diperlukan
-    // Misalnya, untuk merender gambar, blok kode, atau elemen khusus lainnya
+    // Definisi render untuk berbagai jenis block (paragraf, judul)
+    block: {
+      h1: ({ children }) => `<h1>${children}</h1>`,
+      h2: ({ children }) => `<h2>${children}</h2>`,
+      h3: ({ children }) => `<h3>${children}</h3>`,
+      h4: ({ children }) => `<h4>${children}</h4>`,
+      h5: ({ children }) => `<h5>${children}</h5>`,
+      h6: ({ children }) => `<h6>${children}</h6>`,
+      blockquote: ({ children }) => `<blockquote>${children}</blockquote>`,
+      normal: ({ children }) => `<p>${children}</p>`,
+    },
+    // Definisi render untuk daftar (list)
+    list: {
+      bullet: ({ children }) => `<ul>${children}</ul>`,
+      number: ({ children }) => `<ol>${children}</ol>`,
+    },
+    // Definisi render untuk item daftar
+    listItem: {
+      bullet: ({ children }) => `<li>${children}</li>`,
+      number: ({ children }) => `<li>${children}</li>`,
+    },
+    // Anda bisa menambahkan render untuk jenis lain seperti gambar, tautan, dll. di sini
   },
 });
 ---

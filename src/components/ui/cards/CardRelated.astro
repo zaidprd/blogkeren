@@ -23,8 +23,8 @@ const { blogEntry, recentBlogLocale = "" } = Astro.props;
   class="group block rounded-xl outline-hidden ring-zinc-500 transition duration-300 focus-visible:ring-3 dark:ring-zinc-200 dark:focus:outline-hidden"
   href={
     recentBlogLocale && recentBlogLocale !== "en"
-      ? `/${recentBlogLocale}/blog/${blogEntry.data.slug}/`
-      : `/blog/${blogEntry.data.slug}/`
+      ? `/${recentBlogLocale}/blog/${blogEntry.data.slug}`
+      : `/blog/${blogEntry.data.slug}`
   }
   data-astro-prefetch
 >

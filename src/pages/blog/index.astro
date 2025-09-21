@@ -1,160 +1,66 @@
 ---
-// Import necessary components, modules and types
+import { client } from "../../lib/sanity.ts";
+import { capitalize } from "@utils/utils";
 import MainLayout from "@/layouts/MainLayout.astro";
 import CardBlog from "@components/ui/cards/CardBlog.astro";
-import CardBlogRecent from "@components/ui/cards/CardBlogRecent.astro";
-import CardInsight from "@components/ui/cards/CardInsight.astro";
-import { SITE } from "@data/constants";
 
-// Impor klien Sanity dan definisikan tipe data
-import { client } from "../../lib/sanity.ts";
-
-type BlogPost = {
+// Definisi tipe data
+type BlogEntry = {
   title: string;
   slug: string;
   author: string;
-  pubDate: string;
-  readTime: number;
   cardImage: { url: string; altText: string };
-  contents?: string[];
+  pubDate: Date;
+  readTime: number;
 };
 
-type InsightPost = {
-  title: string;
-  slug: string;
-  author: string;
-  pubDate: string;
-  readTime: number;
-  cardImage: { url: string; altText: string };
-  contents?: string[];
-};
-
-// Dapatkan semua blog posts dari Sanity, diurutkan berdasarkan tanggal publikasi
-const blogPosts: BlogPost[] = await client.fetch(`
-  *[_type == "post"] | order(pubDate desc) {
-    title,
+// Ambil semua data blog dari Sanity
+const blogEntries: BlogEntry[] = await client.fetch(
+  `*[_type == "post"] | order(pubDate desc){
     "slug": slug.current,
-    "author": author->name,
-    "pubDate": pubDate,
-    "readTime": readTime,
-    "cardImage": mainImage.asset->{url, altText},
-    contents
-  }
-`);
-
-// Dapatkan semua insights posts dari Sanity
-const insightPosts: InsightPost[] = await client.fetch(`
-  *[_type == "insights"] {
     title,
-    "slug": slug.current,
     "author": author->name,
-    "pubDate": pubDate,
-    "readTime": readTime,
     "cardImage": mainImage.asset->{url, altText},
-    contents
-  }
-`);
-
-// Pisahkan artikel terbaru dari artikel lainnya
-const mostRecentPost = blogPosts[0];
-const otherPosts = blogPosts.slice(1);
-
-// Definisikan variabel untuk konten halaman
-const title: string = "Your Gateway to Construction Excellence";
-const subTitle: string =
-  "Explore the latest news, tips, and insights from ScrewFast to enhance your construction projects. From product spotlights to project management strategies, our blog is your go-to resource for all things hardware and construction.";
-const secondTitle: string = "Insights";
-const secondSubTitle: string =
-  "Stay up-to-date with the latest trends and developments in the construction industry with insights from ScrewFast's team of industry experts. ";
-
-const pageTitle: string = `Blog | ${SITE.title}`;
-const metaDescription =
-  "Stay up-to-date with the latest trends and developments in the construction industry with insights from ScrewFast's team of industry experts.";
-const ogTitle = "Construction Industry Blog | ScrewFast";
+    pubDate,
+    readTime
+  }`
+);
 ---
 
 <MainLayout
-  title={pageTitle}
-  customDescription={metaDescription}
-  customOgTitle={ogTitle}
-  structuredData={{
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": "https://screwfast.uk/blog",
-    url: "https://screwfast.uk/blog",
-    name: "Blog | ScrewFast",
-    description:
-      "Stay up-to-date with the latest trends and developments in the construction industry with insights from ScrewFast's team of industry experts.",
-    isPartOf: {
-      "@type": "WebSite",
-      url: "https://screwfast.uk",
-      name: "ScrewFast",
-      description:
-        "ScrewFast offers top-tier hardware tools and expert construction services to meet all your project needs.",
-    },
-    inLanguage: "en-US",
-  }}
+  title="Blog"
+  customDescription="Jelajahi blog kami untuk mendapatkan informasi terbaru tentang teknologi dan inovasi."
 >
   <section
-    class="mx-auto max-w-[85rem] space-y-8 px-4 pt-16 sm:px-6 lg:px-8 2xl:max-w-full"
+    class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14"
   >
-    <div class="mx-auto max-w-3xl text-left sm:text-center">
+    <div class="mb-10 max-w-2xl">
       <h1
-        class="block text-4xl font-bold tracking-tight text-balance text-neutral-800 md:text-5xl lg:text-6xl dark:text-neutral-200"
+        class="text-balance text-3xl font-bold tracking-tight text-neutral-800 md:text-5xl lg:leading-tight dark:text-neutral-200"
       >
-        {title}
+        Blog
       </h1>
-      <p
-        class="mt-4 text-lg text-pretty text-neutral-600 dark:text-neutral-400"
-      >
-        {subTitle}
+      <p class="mt-4 text-pretty text-neutral-600 dark:text-neutral-400">
+        Jelajahi artikel kami untuk mendapatkan wawasan dan informasi terbaru.
       </p>
     </div>
-  </section>
 
-  <section
-    class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
-  >
-    <div class="grid gap-6 lg:grid-cols-2">
-      {otherPosts.map((blogEntry) => (
-        <CardBlog
-          blogEntry={{
-            data: { ...blogEntry, pubDate: new Date(blogEntry.pubDate) },
-          }}
-        />
-      ))}
-    </div>
-  </section>
-  <section
-    class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
-  >
-    {mostRecentPost && (
-      <CardBlogRecent
-        blogEntry={{
-          data: { ...mostRecentPost, pubDate: new Date(mostRecentPost.pubDate) },
-        }}
-      />
-    )}
-  </section>
-  <section
-    class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full"
-  >
-    <div class="mx-auto mb-10 max-w-2xl text-center lg:mb-14">
-      <h2
-        class="text-2xl font-bold text-neutral-800 md:text-4xl md:leading-tight dark:text-neutral-200"
-      >
-        {secondTitle}
-      </h2>
-      <p class="mt-1 text-pretty text-neutral-600 dark:text-neutral-400">
-        {secondSubTitle}
-      </p>
-    </div>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {
-        insightPosts.map((insightEntry) => (
-          <CardInsight
-            insightEntry={{
-              data: { ...insightEntry, pubDate: new Date(insightEntry.pubDate) },
+        blogEntries.map((entry) => (
+          <CardBlog
+            blogEntry={{
+              data: {
+                title: entry.title,
+                slug: entry.slug,
+                author: entry.author,
+                cardImage: {
+                  url: entry.cardImage.url,
+                  altText: entry.cardImage.altText || "Gambar",
+                },
+                pubDate: new Date(entry.pubDate),
+                readTime: entry.readTime,
+              },
             }}
           />
         ))

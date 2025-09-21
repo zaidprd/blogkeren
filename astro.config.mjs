@@ -1,26 +1,20 @@
 import { defineConfig } from "astro/config";
-import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import compressor from "astro-compressor";
 import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
 import cloudflare from "@astrojs/cloudflare";
+import tailwind from "@astrojs/tailwind"; // Perbaiki: Impor ini
 
 // https://astro.build/config
 export default defineConfig({
-  // Atur output ke 'server' untuk mengaktifkan SSR
-  output: 'server',
-  // Tambahkan Cloudflare adapter
+  output: "server",
   adapter: cloudflare(),
-  
-  // https://docs.astro.build/en/guides/images/#authorizing-remote-images
   site: "https://screwfast.uk",
   image: {
     domains: ["images.unsplash.com"],
   },
-  
   prefetch: true,
-  
   integrations: [
     sitemap({
       i18n: {
@@ -112,11 +106,9 @@ export default defineConfig({
       brotli: true,
     }),
     mdx(),
+    tailwind(), // Perbaiki: Gunakan integrasi ini
   ],
-  experimental: {
-    clientPrerender: true,
-  },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [], // Perbaiki: Hapus plugin Vite di sini
   },
 });

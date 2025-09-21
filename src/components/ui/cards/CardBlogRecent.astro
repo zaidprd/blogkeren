@@ -1,6 +1,7 @@
 ---
-import AvatarBlogLarge from "@components/ui/avatars/AvatarBlogLarge.astro";
-import PrimaryCTA from "@components/ui/buttons/PrimaryCTA.astro";
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "@utils/utils";
 
 interface Props {
   blogEntry: {
@@ -10,61 +11,45 @@ interface Props {
       author: string;
       cardImage: { url: string; altText: string };
       pubDate: Date;
+      readTime: number;
     };
   };
-  recentBlogLocale?: string;
 }
 
-const { blogEntry, recentBlogLocale = "" } = Astro.props;
+const { blogEntry } = Astro.props;
 ---
 
-<div class="grid gap-8 sm:grid-cols-2 sm:items-center">
-  <div class="sm:order-2">
-    <div class="relative rounded-lg pt-[50%] sm:pt-[100%]">
-      <img
-        class="absolute start-0 top-0 size-full rounded-xl object-cover"
-        src={blogEntry.data.cardImage.url}
-        alt={blogEntry.data.cardImage.altText}
-        draggable="false"
-        loading="eager"
-      />
-    </div>
-  </div>
-  <div class="sm:order-1">
-    <h2
-      class="text-balance text-2xl font-bold tracking-tight text-neutral-800 dark:text-neutral-200 md:text-3xl lg:text-4xl lg:leading-tight xl:text-5xl xl:leading-tight"
-    >
-      <a
-        class="outline-hidden ring-zinc-500 transition duration-300 hover:text-orange-400 focus-visible:ring-3 dark:text-neutral-300 dark:ring-zinc-200 dark:hover:text-neutral-50 dark:focus:outline-hidden"
-        href={`/blog/${blogEntry.data.slug}`}
+<a href={`/blog/${blogEntry.data.slug}`}>
+  <article class="group flex flex-col rounded-xl border p-5 shadow-sm md:flex-row dark:border-neutral-700 dark:bg-neutral-900">
+    <div class="order-2 mt-5 md:order-1 md:mt-0 md:pe-8">
+      <p class="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+        {formatDate(blogEntry.data.pubDate)}
+      </p>
+      <h3
+        class="mt-2 text-xl font-semibold text-neutral-800 transition-colors duration-500 ease-in-out group-hover:text-primary-600 md:text-2xl dark:text-neutral-200"
       >
         {blogEntry.data.title}
-      </a>
-    </h2>
-    <div class="mt-6 flex items-center sm:mt-10">
-      <AvatarBlogLarge
-        blogEntry={{
-          id: blogEntry.data.slug,
-          collection: "blog",
-          data: {
-            author: blogEntry.data.author,
-            cardImage: blogEntry.data.cardImage,
-            pubDate: blogEntry.data.pubDate,
-          },
-        }}
-      />
-      <div class="ms-3 sm:ms-4">
-        <p class="font-bold text-neutral-800 dark:text-neutral-200 sm:mb-1">
-          {blogEntry.data.author}
-        </p>
+      </h3>
+      <div class="mt-4 flex items-center gap-x-2.5 text-xs">
+        <span class="font-medium text-neutral-800 dark:text-neutral-200"
+          >{blogEntry.data.author}</span
+        >
+        <span class="text-neutral-500 dark:text-neutral-500">•</span>
+        <span class="text-neutral-500 dark:text-neutral-500"
+          >{blogEntry.data.readTime} min read</span
+        >
       </div>
     </div>
-    <div class="mt-5">
-      <PrimaryCTA
-        url={`/blog/${blogEntry.data.slug}`}
-        title="Read More"
-        data-astro-prefetch
+    <div
+      class="order-1 h-36 w-full shrink-0 overflow-hidden rounded-xl md:order-2 md:w-36"
+    >
+      <img
+        class="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+        src={blogEntry.data.cardImage.url}
+        alt={blogEntry.data.cardImage.altText}
+        draggable={"false"}
+        loading={"lazy"}
       />
     </div>
-  </div>
-</div>
+  </article>
+</a>
