@@ -4,10 +4,11 @@ import compressor from "astro-compressor";
 import starlight from "@astrojs/starlight";
 import mdx from "@astrojs/mdx";
 import cloudflare from "@astrojs/cloudflare";
-import tailwind from "@astrojs/tailwind"; // Perbaiki: Impor ini
+import tailwind from "@astrojs/tailwind";
 
-// https://astro.build/config
 export default defineConfig({
+  // Kalau kamu mau full SSR, biarkan "server"
+  // Kalau mau SSG (lebih cepat & murah di Cloudflare), bisa ganti ke "static"
   output: "server",
   adapter: cloudflare(),
   site: "https://screwfast.uk",
@@ -28,10 +29,7 @@ export default defineConfig({
     starlight({
       title: "ScrewFast Docs",
       locales: {
-        root: {
-          label: "English",
-          lang: "en",
-        },
+        root: { label: "English", lang: "en" },
         de: { label: "Deutsch", lang: "de" },
         es: { label: "Español", lang: "es" },
         fa: { label: "Persian", lang: "fa", dir: "rtl" },
@@ -89,14 +87,14 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:image",
-            content: "https://screwfast.uk" + "/social.webp",
+            content: "https://screwfast.uk/social.webp",
           },
         },
         {
           tag: "meta",
           attrs: {
             property: "twitter:image",
-            content: "https://screwfast.uk" + "/social.webp",
+            content: "https://screwfast.uk/social.webp",
           },
         },
       ],
@@ -106,9 +104,6 @@ export default defineConfig({
       brotli: true,
     }),
     mdx(),
-    tailwind(), // Perbaiki: Gunakan integrasi ini
+    tailwind(),
   ],
-  vite: {
-    plugins: [], // Perbaiki: Hapus plugin Vite di sini
-  },
 });
