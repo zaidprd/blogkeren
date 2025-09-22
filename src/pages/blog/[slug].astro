@@ -44,7 +44,7 @@ type RelatedPost = {
 // Dapatkan semua slug dari Sanity untuk membuat rute
 export async function getStaticPaths() {
   const posts: { slug: string }[] = await client.fetch(`*[_type == "post"]{ "slug": slug.current }`);
-
+console.log('Posts found:', posts); 
   return posts.map((post) => ({
     params: { slug: post.slug },
   }));
