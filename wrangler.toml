@@ -1,10 +1,10 @@
+# wrangler.toml
 name = "blogkeren"
-main = "./dist/server.js"
-compatibility_date = "2023-01-01"
+compatibility_date = "2023-05-03"
 
 [vars]
-# Anda tidak perlu menyetel ini jika variabel lingkungan sudah ada
+PUBLIC_SANITY_PROJECT_ID = "nfclqqvk"
+PUBLIC_SANITY_DATASET = "production"
 
-[[kv_namespaces]]
-binding = "SESSION"
-id = "52ddbded93b044a290924a131a06df77"
+[build]
+pages_build_output_dir = "./dist"
