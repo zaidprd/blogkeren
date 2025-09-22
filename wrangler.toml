@@ -1,0 +1,10 @@
+name = "blogkeren"
+main = "./dist/server.js"
+compatibility_date = "2023-01-01"
+
+[vars]
+# Anda tidak perlu menyetel ini jika variabel lingkungan sudah ada
+
+[[kv_namespaces]]
+binding = "SESSION"
+id = "52ddbded93b044a290924a131a06df77"
