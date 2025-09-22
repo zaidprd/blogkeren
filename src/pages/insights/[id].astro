@@ -5,6 +5,8 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import { Image } from "astro:assets";
 import { getCollection, render } from "astro:content";
 
+export const prerender = true;
+
 // Use `getStaticPaths` to generate static routes for generated pages on build
 export async function getStaticPaths() {
   const insightPosts = await getCollection("insights", ({ id }) =>
