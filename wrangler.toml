@@ -1,4 +1,3 @@
-# wrangler.toml
 name = "blogkeren"
 compatibility_date = "2023-05-03"
 
@@ -7,4 +6,4 @@ PUBLIC_SANITY_PROJECT_ID = "nfclqqvk"
 PUBLIC_SANITY_DATASET = "production"
 
 [build]
-pages_build_output_dir = "./dist"
+pages_build_output_dir = "dist"
