@@ -10,7 +10,7 @@ export default defineConfig({
   // Kalau kamu mau full SSR, biarkan "server"
   // Kalau mau SSG (lebih cepat & murah di Cloudflare), bisa ganti ke "static"
   output: "server",
-  adapter: cloudflare(),
+ adapter: cloudflare({ sessions: false }),
   site: "https://screwfast.uk",
   image: {
     domains: ["images.unsplash.com"],
