@@ -15,15 +15,11 @@ declare global {
 }
 
 // This gets the static paths for all the unique products
-
 export async function getStaticPaths() {
-  const productEntries = await getCollection("products", ({ id }) =>
-    id.startsWith("en/")
-  );
+  const productEntries = await getCollection("products");
   return productEntries.map((product) => {
-    const idWithoutLang = product.id.replace(/^en\//, ""); // Remove the "en/" prefix
     return {
-      params: { id: idWithoutLang },
+      params: { id: product.id },
       props: { product },
     };
   });
@@ -33,7 +29,7 @@ const { product } = Astro.props;
 
 const pageTitle: string = `${product.data.title} | ${SITE.title}`;
 const metaDescription = product.data.description;
-const ogTitle = `${product.data.title} | Hardware Tools | ScrewFast`;
+const ogTitle = `${product.data.title} | Hardware Tools | ${SITE.title}`;
 ---
 
 <MainLayout
@@ -43,7 +39,7 @@ const ogTitle = `${product.data.title} | Hardware Tools | ScrewFast`;
   structuredData={{
     "@context": "https://schema.org",
     "@type": "Product",
-    "@id": `https://screwfast.uk/products/${product.data.title.toLowerCase().replace(/\s+/g, "-")}`,
+    "@id": `https://blogkeren.pages.dev/products/${product.id}`,
     name: product.data.title,
     description: product.data.description,
     brand: {
@@ -406,4 +402,13 @@ const ogTitle = `${product.data.title} | Hardware Tools | ScrewFast`;
       });
     });
   });
+</script>
+<script>
+  // Update the `mainEntityOfPage` URL
+  const structuredData = document.querySelector('script[type="application/ld+json"]');
+  if (structuredData) {
+    const data = JSON.parse(structuredData.textContent);
+    data.mainEntityOfPage["@id"] = window.location.href;
+    structuredData.textContent = JSON.stringify(data, null, 2);
+  }
 </script>
